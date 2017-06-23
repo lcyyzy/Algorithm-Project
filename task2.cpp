@@ -28,15 +28,12 @@ static int f[M][M] = {0};
 static int patht[N][M] = {0};
 static int patht2[N][M] = {0};
 static string debruijn[M];
-static int adjacent[M];
-static int adj[M] = {0};
-static int new_adj[M] = {0};
+//static int adjacent[M][M] = {0};
 static string adpath1[M];
 static string adpath2[M];
 static string new_adpath[N];
 static int minimum[M] = {0};
 static int minrow[M] = {0};
-static int src[M] = {0};
 string resultb;
 
 /*int distance(string a, string b)
@@ -70,14 +67,14 @@ string resultb;
     return f[la][lb];
 }*/
 
-int connect(string a, string b)
+/*int connect(string a, string b)
 {
     for (int i = 1, j = 0; i < a.length(); i++, j++) {
         if (a[i] != b[j])
             return 0;
     }
     return 1;
-}
+}*/
 
 int main()
 {
@@ -85,29 +82,19 @@ int main()
     string a;
     int nodes;
     freopen("task2.in","r", stdin);
-    freopen("task2.out","w", stdout);
+    //freopen("task2.out","w", stdout);
     cin >> a;
     cin >> nodes;
     for (int i = 0; i < nodes; i++) {
         cin >> debruijn[i];
     }
-
-    for (int i = 0; i < nodes; i++) {
-        adjacent[i] = -1;
-        //cout << adjacent[i] << endl;
-    }
-
-    for (int i = 0; i < nodes; i++) {
+    /*for (int i = 0; i < nodes; i++) {
         for (int j = 0; j < nodes; j++) {
             if (connect(debruijn[i], debruijn[j]) == 1) {
-                adjacent[i] = j;
-                break;
-                //firstad[i][j] = 1;
+                adjacent[i][j] = 1;
+                firstad[i][j] = 1;
             }
         }
-    }
-    /*for (int i = 0; i < nodes; i++) {
-        cout << adjacent[i] << endl;
     }*/
 
     /*for (int i = 0; i < nodes; i++) {
@@ -126,7 +113,7 @@ int main()
     }
 
     //int lb = debruijn[0].length();
-
+    
     for (int i = 0; i < nodes; i++) {
         //cout << "patht " << i << endl;
         //cout << "QAQAQAQAQAQQ" << endl;
@@ -168,25 +155,23 @@ int main()
     }
     int count = 0;
 
-
+    
 
     int rows = nodes;
     int loop = 0;
 
     while (1) {
         loop++;
-        //cout << loop;
+        cout << loop << endl;
         int flag = 0;
         //count ++;
         //calculate rows
         //char new_node;
-        //cout << rows << endl;
+
         if (loop == 1) {
             for (int i = 0; i < nodes; i++) {
                 adpath1[i] = debruijn[i];
                 //cout << adpath1[i] << endl;
-                adj[i] = adjacent[i];
-                //cout << adj[i] << endl;
             }
         }
         else {
@@ -196,27 +181,41 @@ int main()
             }
         }
         //cout << "judge start" << endl;
+
         int new_rows = 0;
         for (int j = 0; j < rows; j++) {
-            if (adj[j] != -1) {
-                new_adpath[new_rows] = adpath1[j] + debruijn[adj[j]][lb - 1];
-                src[new_rows] = j;
-                new_adj[new_rows] = adjacent[adj[j]];
-                new_rows++;
-                flag = 1;
+            //cout << "judge " << j;
+            for (int i = 0; i < nodes; i++) {
+                
+                if (adpath1[j].substr(loop, loop + lb - 1) == debruijn[i].substr(0, lb - 1)) {
+                    new_adpath[new_rows++] = adpath1[j] + debruijn[i][lb - 1];
+                    //cout << debruijn[i][lb - 1] << endl;
+                    flag = 1;
+                }
+                
+                /*if ((adpath1[j] + 'A').substr(loop, lb + loop) == debruijn[i]) {
+                    new_adpath[new_rows++] = adpath1[j] + 'A';
+                    flag = 1;
+                }
+                if ((adpath1[j] + 'C').substr(loop, lb + loop) == debruijn[i]) {
+                    new_adpath[new_rows++] = adpath1[j] + 'C';
+                    flag = 1;
+                }
+                if ((adpath1[j] + 'T').substr(loop, lb + loop) == debruijn[i]) {
+                    new_adpath[new_rows++] = adpath1[j] + 'T';
+                    flag = 1;
+                }
+                if ((adpath1[j] + 'G').substr(loop, lb + loop) == debruijn[i]) {
+                    new_adpath[new_rows++] = adpath1[j] + 'G';
+                    flag = 1;
+                }*/
             }
         }
-        /*for (int j = 0; j < new_rows; j++) {
-            cout << new_adj[j] << endl;
-        }*/
         //cout << "judge finished" << endl;
         if (flag == 0)
             break;
-
         for (int i = 0; i < new_rows; i++) {
-            //cout << new_adj[i] << new_adpath[i] << endl;
             adpath2[i] = new_adpath[i];
-            adj[i] = new_adj[i];
             //cout << adpath[loop][i] << endl;
         }
 
@@ -260,11 +259,10 @@ int main()
         int tempindex;
         //TODO: What is adpath
         for (int i = 0; i < new_rows; i++) {
-            tempindex = src[i];
-            /*for (int j = 0; j < rows; j++) {
+            for (int j = 0; j < rows; j++) {
                 if (adpath1[j] == adpath2[i].substr(0, adpath2[i].length() - 1))
                     tempindex = j;
-            }*/
+            }
             for (int j = 1; j < la + 1; j++) {
                 //patht2[i][j] = min(patht2[i][j - 1] + 1, patht[i][j] + 1, patht[i][j-1] + 1);
                 patht2[i][j] = patht[tempindex][j] + 1;
@@ -444,4 +442,5 @@ int main()
     //cout << "Running time is : " << static_cast<double>(end - start) / CLOCKS_PER_SEC << endl;
     return 0;
 }
+
 
