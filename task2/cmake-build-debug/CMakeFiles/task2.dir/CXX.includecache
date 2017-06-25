@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/LCY/Documents/Code/algorithm/task2/main.cpp
+iostream
+-
+algorithm
+-
+stack
+-
+string
+-
+cstdlib
+-
+string.h
+-
+sstream
+-
+cstdio
+-
+
